@@ -3,19 +3,15 @@ require "./human_player"
 
 class Game
   
-  def initialize(player_1_mark, player_2_mark)
-    @player_one = HumanPlayer.new(player_1_mark)
-    @player_two = HumanPlayer.new(player_2_mark)
-    @board = Board.new
-    @current_player = @player_one
+  def initialize(board_size, *player_marks)
+    @players = player_marks.map { |mark| HumanPlayer.new(mark) }
+    @board = Board.new(board_size)
+    @current_player = @players[0]
   end
 
   def switch_turn
-    if @current_player == @player_one
-      @current_player = @player_two
-    else
-      @current_player = @player_one
-    end
+    @players.rotate!(1)
+    @current_player = @players[0]
   end
 
   def play

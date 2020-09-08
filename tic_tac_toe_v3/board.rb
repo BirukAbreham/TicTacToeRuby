@@ -1,7 +1,7 @@
 class Board
   
-  def initialize
-    @grid = Array.new(3) { Array.new(3, "_") }
+  def initialize(size)
+    @grid = Array.new(size) { Array.new(size, "_") }
   end
 
   def valid?(position)
@@ -67,6 +67,16 @@ class Board
       return true if row.any? { |cell| cell == "_" }
     end
     false
+  end
+  
+  def legal_positions
+    unmarked_legal = []
+    @grid.each_with_index do |row, idx1|
+      row.each_with_index do |col, idx2|
+        unmarked_legal << [idx1, idx2] if col == "_"
+      end
+    end
+    unmarked_legal
   end
 
 end

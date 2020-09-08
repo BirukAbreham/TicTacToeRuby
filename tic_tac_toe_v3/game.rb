@@ -1,28 +1,32 @@
 require "./board"
 require "./human_player"
+require "./computer_player"
 
 class Game
   
-  def initialize(player_1_mark, player_2_mark)
-    @player_one = HumanPlayer.new(player_1_mark)
-    @player_two = HumanPlayer.new(player_2_mark)
-    @board = Board.new
-    @current_player = @player_one
+  def initialize(board_size, players_hash = {})
+    @players = []
+    players_hash.each do |mark, type|
+      if type
+        @players << ComputerPlayer.new(mark)
+      else
+        @players << HumanPlayer.new(mark)
+      end
+    end
+    @board = Board.new(board_size)
+    @current_player = @players[0]
   end
 
   def switch_turn
-    if @current_player == @player_one
-      @current_player = @player_two
-    else
-      @current_player = @player_one
-    end
+    @players.rotate!(1)
+    @current_player = @players[0]
   end
 
   def play
     while @board.empty_positions?
       @board.print
       @board.place_mark(
-        @current_player.get_position, 
+        @current_player.get_position(@board.legal_positions), 
         @current_player.mark
       )
       if @board.win?(@current_player.mark)
